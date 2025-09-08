@@ -10,7 +10,6 @@ import {
   Camera,
   TrendingUp,
   ShoppingCart,
-  Mic,
   Bell
 } from "lucide-react";
 
@@ -68,13 +67,6 @@ const Index = () => {
             >
               <TrendingUp className="h-6 w-6" />
               <span className="text-sm">Market</span>
-            </Button>
-            <Button
-              variant="voice"
-              className="h-auto py-4 flex-col gap-2"
-            >
-              <Mic className="h-6 w-6" />
-              <span className="text-sm">Voice AI</span>
             </Button>
           </CardContent>
         </Card>

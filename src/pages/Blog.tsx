@@ -12,7 +12,6 @@ import {
   Share, 
   BookOpen,
   TrendingUp,
-  Mic,
   Filter,
   Clock,
   ArrowRight
@@ -149,9 +148,6 @@ export default function Blog() {
                   <Button variant="outline" className="flex items-center gap-2">
                     <Filter className="h-4 w-4" />
                     Filters
-                  </Button>
-                  <Button variant="voice" size="icon">
-                    <Mic className="h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -375,10 +371,6 @@ export default function Blog() {
               <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                 <TrendingUp className="h-5 w-5" />
                 <span className="text-sm">Popular Posts</span>
-              </Button>
-              <Button variant="voice" className="h-auto py-4 flex-col gap-2">
-                <Mic className="h-5 w-5" />
-                <span className="text-sm">Voice Search</span>
               </Button>
             </div>
           </CardContent>

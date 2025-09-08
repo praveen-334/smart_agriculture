@@ -6,6 +6,15 @@
 All colors MUST be HSL.
 */
 
+/* Tamil Font Support */
+:root {
+  font-family: 'Inter', 'Noto Sans Tamil', system-ui, -apple-system, sans-serif;
+}
+
+[lang="ta"], [lang="ta"] * {
+  font-family: 'Noto Sans Tamil', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 @layer base {
   :root {
     /* AgriSmart Agricultural Color Palette */

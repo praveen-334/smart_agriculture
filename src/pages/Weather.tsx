@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import {
   Cloud, 
   Sun, 
   CloudRain, 
+  CloudSnow,
+  Zap,
   Thermometer, 
   Droplets, 
   Wind, 
@@ -13,35 +15,116 @@ import {
   Calendar,
   MapPin,
   Bell,
-  Mic,
   Leaf,
   Wheat,
   AlertTriangle,
   CheckCircle,
-  Info
+  Info,
+  Loader2,
+  RefreshCw
 } from "lucide-react";
+import { useWeather } from "@/hooks/useWeather";
+import { getWeatherCondition } from "@/services/weatherService";
 
 export default function Weather() {
-  const [selectedLocation, setSelectedLocation] = useState("Punjab, India");
+  const { weatherData, location, loading, error, refetch } = useWeather();
 
-  const currentWeather = {
-    temperature: 28,
-    condition: "Partly Cloudy",
-    humidity: 65,
-    windSpeed: 12,
-    visibility: 8,
-    uvIndex: 6,
-    icon: Cloud,
-    location: "Ludhiana, Punjab"
+  // Icon mapping for weather conditions
+  const getWeatherIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'sun': return Sun;
+      case 'cloud': return Cloud;
+      case 'cloud-rain': return CloudRain;
+      case 'cloud-snow': return CloudSnow;
+      case 'zap': return Zap;
+      default: return Cloud;
+    }
   };
 
-  const forecast = [
-    { day: "Today", high: 30, low: 22, condition: "Partly Cloudy", icon: Cloud, rainChance: 20 },
-    { day: "Tomorrow", high: 32, low: 24, condition: "Sunny", icon: Sun, rainChance: 5 },
-    { day: "Friday", high: 29, low: 21, condition: "Rainy", icon: CloudRain, rainChance: 80 },
-    { day: "Saturday", high: 26, low: 19, condition: "Rainy", icon: CloudRain, rainChance: 70 },
-    { day: "Sunday", high: 28, low: 20, condition: "Cloudy", icon: Cloud, rainChance: 30 }
-  ];
+  // Process forecast data from hourly data (group by days)
+  const forecastData = useMemo(() => {
+    if (!weatherData) return [];
+    
+    const dailyData: any[] = [];
+    const processedDays = new Set<string>();
+    
+    for (let i = 0; i < weatherData.hourly.time.length; i += 24) {
+      if (dailyData.length >= 5) break;
+      
+      const date = weatherData.hourly.time[i];
+      const dayKey = date.toDateString();
+      
+      if (processedDays.has(dayKey)) continue;
+      processedDays.add(dayKey);
+      
+      // Calculate day's high/low temperatures from next 24 hours
+      let high = -Infinity;
+      let low = Infinity;
+      let totalPrecipitation = 0;
+      
+      for (let j = i; j < Math.min(i + 24, weatherData.hourly.time.length); j++) {
+        const temp = weatherData.hourly.temperature_2m[j];
+        if (temp > high) high = temp;
+        if (temp < low) low = temp;
+        totalPrecipitation += weatherData.hourly.precipitation_probability[j];
+      }
+      
+      const weatherCode = weatherData.hourly.weather_code[i];
+      const weatherCondition = getWeatherCondition(weatherCode);
+      const WeatherIcon = getWeatherIcon(weatherCondition.icon);
+      
+      dailyData.push({
+        day: i === 0 ? "Today" : date.toLocaleDateString('en-US', { weekday: 'short' }),
+        high: Math.round(high),
+        low: Math.round(low),
+        condition: weatherCondition.condition,
+        icon: WeatherIcon,
+        rainChance: Math.round(totalPrecipitation / 24)
+      });
+    }
+    
+    return dailyData;
+  }, [weatherData]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Getting weather data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !weatherData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="h-12 w-12 text-warning mx-auto mb-4" />
+          <p className="text-muted-foreground mb-4">{error || "Failed to load weather data"}</p>
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentCondition = getWeatherCondition(weatherData.current.weather_code);
+  const CurrentWeatherIcon = getWeatherIcon(currentCondition.icon);
+
+  const currentWeather = {
+    temperature: Math.round(weatherData.current.temperature_2m),
+    condition: currentCondition.condition,
+    humidity: Math.round(weatherData.current.relative_humidity_2m),
+    windSpeed: Math.round(weatherData.current.wind_speed_10m),
+    visibility: 10, // Open-Meteo doesn't provide this in basic plan
+    uvIndex: Math.round(weatherData.hourly.uv_index[0] || 0),
+    icon: CurrentWeatherIcon,
+    location: location?.address || "Agricultural Technology Center, Innovation Hub, Sector 18, New Delhi, India 110001"
+  };
 
   const farmingAlerts = [
     {
@@ -97,15 +180,6 @@ export default function Weather() {
     }
   ];
 
-  const getAlertColor = (type: string) => {
-    switch (type) {
-      case "warning": return "warning";
-      case "success": return "success";
-      case "info": return "info";
-      default: return "secondary";
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-8">
       {/* Header */}
@@ -119,9 +193,6 @@ export default function Weather() {
                 {currentWeather.location}
               </p>
             </div>
-            <Button variant="voice" size="icon">
-              <Mic className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>
@@ -134,7 +205,7 @@ export default function Weather() {
               {/* Main Weather */}
               <div className="text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
-                  <currentWeather.icon className="h-16 w-16 text-primary" />
+                  <CurrentWeatherIcon className="h-16 w-16 text-primary" />
                   <div>
                     <p className="text-4xl font-bold">{currentWeather.temperature}°C</p>
                     <p className="text-muted-foreground">{currentWeather.condition}</p>
@@ -195,21 +266,24 @@ export default function Weather() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-              {forecast.map((day, index) => (
-                <div key={index} className="text-center p-4 bg-accent/30 rounded-lg">
-                  <p className="font-medium mb-2">{day.day}</p>
-                  <day.icon className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <p className="text-sm text-muted-foreground mb-1">{day.condition}</p>
-                  <div className="flex justify-center gap-2 text-sm">
-                    <span className="font-semibold">{day.high}°</span>
-                    <span className="text-muted-foreground">{day.low}°</span>
+              {forecastData.map((day, index) => {
+                const IconComponent = day.icon;
+                return (
+                  <div key={index} className="text-center p-4 bg-accent/30 rounded-lg">
+                    <p className="font-medium mb-2">{day.day}</p>
+                    <IconComponent className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <p className="text-sm text-muted-foreground mb-1">{day.condition}</p>
+                    <div className="flex justify-center gap-2 text-sm">
+                      <span className="font-semibold">{day.high}°</span>
+                      <span className="text-muted-foreground">{day.low}°</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1 mt-2 text-xs">
+                      <Droplets className="h-3 w-3 text-primary" />
+                      <span>{day.rainChance}%</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-center gap-1 mt-2 text-xs">
-                    <Droplets className="h-3 w-3 text-primary" />
-                    <span>{day.rainChance}%</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -323,10 +397,6 @@ export default function Weather() {
               <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                 <Leaf className="h-5 w-5" />
                 <span className="text-sm">Pest Forecast</span>
-              </Button>
-              <Button variant="voice" className="h-auto py-4 flex-col gap-2">
-                <Mic className="h-5 w-5" />
-                <span className="text-sm">Voice Weather</span>
               </Button>
             </div>
           </CardContent>

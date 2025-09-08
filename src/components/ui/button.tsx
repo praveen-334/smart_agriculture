@@ -23,8 +23,6 @@ const buttonVariants = cva(
           "text-primary underline-offset-4 hover:underline",
         hero:
           "bg-gradient-primary text-primary-foreground shadow-glow hover:shadow-primary hover:scale-105 border border-primary-glow/20",
-        voice:
-          "bg-gradient-secondary text-secondary-foreground shadow-glow hover:shadow-secondary hover:scale-105 animate-pulse-glow",
       },
       size: {
         default: "h-10 px-4 py-2",
