@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+// import { LanguageToggle } from "@/components/LanguageToggle";
+// import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Home, 
   Camera, 
   ShoppingCart, 
   User, 
   Menu, 
-  Mic,
   Leaf,
   TrendingUp,
   Users,
@@ -18,6 +20,7 @@ import {
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  // const { t } = useLanguage();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -26,7 +29,8 @@ export function Navigation() {
     { name: "Diagnose", path: "/diagnose", icon: Camera },
     { name: "Marketplace", path: "/buy", icon: ShoppingCart },
     { name: "Market Analysis", path: "/market-analysis", icon: TrendingUp },
-    { name: "Profile", path: "/user-profile", icon: User },
+    { name: "", path: "/weather", icon: Cloud }, 
+    { name: "", path: "/user-profile", icon: User }, 
   ];
 
   const moreItems = [
@@ -66,14 +70,31 @@ export function Navigation() {
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
-                  <span>{item.name}</span>
+                  {item.name && <span>{item.name}</span>}
                 </Link>
               ))}
-              
-              {/* Voice Input Button */}
-              <Button variant="voice" size="icon">
-                <Mic className="h-4 w-4" />
-              </Button>
+
+              {/* Language Toggle - Temporarily disabled */}
+              {/* <LanguageToggle /> */}
+
+              {/* Authentication */}
+              <SignedOut>
+                <Link to="/auth">
+                  <Button variant="outline" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8"
+                    }
+                  }}
+                />
+              </SignedIn>
             </div>
           </div>
         </div>
@@ -93,7 +114,20 @@ export function Navigation() {
               }`}
             >
               <item.icon className="h-5 w-5" />
-              <span className="text-xs font-medium">{item.name}</span>
+              {item.name && <span className="text-xs font-medium">{item.name}</span>}
+            </Link>
+          ))}
+          {navItems.slice(4, 6).map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center space-y-1 p-2 rounded-md min-w-[60px] ${
+                isActive(item.path)
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              }`}
+            >
+              <item.icon className="h-5 w-5" />
             </Link>
           ))}
           
@@ -125,12 +159,6 @@ export function Navigation() {
                 </Link>
               ))}
             </div>
-            <div className="mt-6 flex justify-center">
-              <Button variant="voice" className="w-full">
-                <Mic className="h-4 w-4 mr-2" />
-                Voice Input
-              </Button>
-            </div>
           </div>
         </div>
       )}
@@ -145,9 +173,26 @@ export function Navigation() {
             <span className="font-bold text-lg text-primary">AgriSmart</span>
           </Link>
           
-          <Button variant="voice" size="icon">
-            <Mic className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center space-x-2">
+            {/* Language toggle temporarily disabled */}
+            {/* <LanguageToggle /> */}
+            <SignedOut>
+              <Link to="/auth">
+                <Button variant="outline" size="icon">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8"
+                  }
+                }}
+              />
+            </SignedIn>
+          </div>
         </div>
       </div>
     </>

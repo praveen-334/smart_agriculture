@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { Camera, Mic, ArrowRight, Play } from "lucide-react";
+import { Camera, ArrowRight, Play } from "lucide-react";
+// import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/hero-agriculture.jpg";
 
 export function HeroSection() {
   const navigate = useNavigate();
+  // const { t } = useLanguage();
 
   return (
     <section className="relative overflow-hidden bg-gradient-hero">
@@ -62,27 +64,12 @@ export function HeroSection() {
             </Button>
             
             <Button
-              variant="voice"
+              variant="outline"
               size="xl"
-              className="w-full sm:w-auto group"
+              className="w-full sm:w-auto group border-white/20 text-white hover:bg-white/10"
             >
               <Play className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
               Watch Demo
-            </Button>
-          </div>
-          
-          {/* Voice Assistant */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <p className="text-primary-foreground/70 text-sm mb-4">
-              Or use our Voice Assistant for hands-free interaction
-            </p>
-            <Button
-              variant="voice"
-              size="lg"
-              className="group animate-pulse-glow"
-            >
-              <Mic className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              Ask AgriSmart AI
             </Button>
           </div>
         </div>

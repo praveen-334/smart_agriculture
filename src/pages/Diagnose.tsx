@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { VoiceInput } from "@/components/VoiceInput";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Camera, Upload, Mic, Scan, AlertCircle, CheckCircle, 
+  Camera, Upload, Scan, AlertCircle, CheckCircle, 
   Award, Share2, Bookmark, ShoppingCart, Star, 
   Leaf, Sparkles, TrendingUp, Heart, Shield, Calendar
 } from "lucide-react";
@@ -16,7 +15,6 @@ export default function Diagnose() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [showVoiceInput, setShowVoiceInput] = useState(false);
   const [badges, setBadges] = useState<string[]>([]);
   const [savedDiagnoses, setSavedDiagnoses] = useState<any[]>([]);
 
@@ -304,10 +302,6 @@ Be detailed and practical. Focus on actionable advice that farmers can implement
     }
   };
 
-  const handleVoiceInput = (text: string) => {
-    console.log("Voice input received:", text);
-    // Process voice input for additional diagnosis context
-  };
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-8">
@@ -452,33 +446,11 @@ Be detailed and practical. Focus on actionable advice that farmers can implement
                     </>
                   )}
                 </Button>
-                
-                <Button 
-                  onClick={() => setShowVoiceInput(!showVoiceInput)}
-                  variant="voice" 
-                  size="lg" 
-                  className="flex-1"
-                >
-                  <Mic className="mr-2 h-5 w-5" />
-                  Voice Input
-                </Button>
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Voice Input Component */}
-        <AnimatePresence>
-          {showVoiceInput && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-            >
-              <VoiceInput onVoiceInput={handleVoiceInput} />
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Analysis Results */}
         <AnimatePresence>

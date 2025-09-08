@@ -6,7 +6,6 @@ import {
   TrendingDown, 
   DollarSign, 
   BarChart3, 
-  Mic,
   Calendar,
   MapPin,
   AlertTriangle
@@ -79,9 +78,6 @@ export default function MarketAnalysis() {
               <h1 className="text-3xl md:text-4xl font-bold mb-2">Market Analysis</h1>
               <p className="text-primary-foreground/90">Real-time prices, trends & AI insights</p>
             </div>
-            <Button variant="voice" size="icon">
-              <Mic className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>
@@ -203,10 +199,6 @@ export default function MarketAnalysis() {
                 <Calendar className="mr-2 h-4 w-4" />
                 Price History
               </Button>
-              <Button variant="voice">
-                <Mic className="mr-2 h-4 w-4" />
-                Ask AI
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -276,10 +268,6 @@ export default function MarketAnalysis() {
           <Button variant="outline" className="h-auto py-4 flex-col gap-2">
             <Calendar className="h-5 w-5" />
             <span className="text-sm">Set Reminders</span>
-          </Button>
-          <Button variant="voice" className="h-auto py-4 flex-col gap-2">
-            <Mic className="h-5 w-5" />
-            <span className="text-sm">Voice Query</span>
           </Button>
         </div>
       </div>

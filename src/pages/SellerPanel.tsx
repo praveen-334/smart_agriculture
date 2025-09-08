@@ -16,7 +16,6 @@ import {
   ShoppingCart,
   Star,
   Camera,
-  Mic,
   CheckCircle,
   AlertCircle
 } from "lucide-react";
@@ -279,9 +278,6 @@ export default function SellerPanel() {
             onClick={() => setShowAddProduct(false)}
           >
             Cancel
-          </Button>
-          <Button variant="voice">
-            <Mic className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

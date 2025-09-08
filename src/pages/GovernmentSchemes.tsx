@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { VoiceInput } from "@/components/VoiceInput";
 import { 
   Search, 
   Filter, 
@@ -13,7 +12,6 @@ import {
   Users, 
   FileText,
   Bot,
-  Mic,
   CheckCircle,
   AlertTriangle,
   Info
@@ -167,19 +165,6 @@ export default function GovernmentSchemes() {
           </div>
         </div>
 
-        {/* Voice Input */}
-        {showChatbot && (
-          <div className="animate-fade-in">
-            <VoiceInput
-              onVoiceInput={(text) => {
-                console.log("Voice input:", text);
-                // Here you would integrate with Gemini API
-                setSearchQuery(text);
-              }}
-              placeholder="Ask about schemes in your language"
-            />
-          </div>
-        )}
 
         {/* Categories */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -286,9 +271,6 @@ export default function GovernmentSchemes() {
                           <FileText className="mr-2 h-4 w-4" />
                           View Details
                         </Button>
-                        <Button variant="voice">
-                          <Mic className="h-4 w-4" />
-                        </Button>
                       </div>
 
                       {/* Footer */}
@@ -319,10 +301,6 @@ export default function GovernmentSchemes() {
               <Button variant="outline" className="h-auto py-4 flex-col gap-2">
                 <Calendar className="h-5 w-5" />
                 <span className="text-sm">Set Reminders</span>
-              </Button>
-              <Button variant="voice" className="h-auto py-4 flex-col gap-2">
-                <Mic className="h-5 w-5" />
-                <span className="text-sm">Voice Help</span>
               </Button>
             </div>
           </CardContent>

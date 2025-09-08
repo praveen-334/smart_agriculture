@@ -10,7 +10,6 @@ import {
   Star, 
   MapPin, 
   Truck,
-  Mic,
   Apple,
   Wheat,
   Zap
@@ -101,11 +100,6 @@ export default function Buy() {
                   className="pl-10"
                 />
               </div>
-
-              {/* Voice Search */}
-              <Button variant="voice" size="icon">
-                <Mic className="h-4 w-4" />
-              </Button>
 
               {/* Filter Button */}
               <Button variant="outline" className="flex items-center gap-2">
@@ -213,9 +207,6 @@ export default function Buy() {
                       >
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         {product.inStock ? "Add to Cart" : "Notify Me"}
-                      </Button>
-                      <Button variant="outline" size="icon">
-                        <Mic className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>

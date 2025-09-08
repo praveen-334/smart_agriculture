@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { FloatingChatbot } from "@/components/FloatingChatbot";
 import Index from "./pages/Index";
 import Diagnose from "./pages/Diagnose";
 import Buy from "./pages/Buy";
@@ -13,7 +16,10 @@ import SellerPanel from "./pages/SellerPanel";
 import GovernmentSchemes from "./pages/GovernmentSchemes";
 import Weather from "./pages/Weather";
 import Blog from "./pages/Blog";
+import Auth from "./pages/Auth";
+import RoleLogin from "./pages/RoleLogin";
 import NotFound from "./pages/NotFound";
+import Chatbot from "./pages/Chatbot";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +29,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <AuthProvider>
+          <Routes>
           {/* Home page without layout to show custom design */}
           <Route path="/" element={<Layout><Index /></Layout>} />
           
@@ -31,14 +38,29 @@ const App = () => (
           <Route path="/diagnose" element={<Layout><Diagnose /></Layout>} />
           <Route path="/buy" element={<Layout><Buy /></Layout>} />
           <Route path="/market-analysis" element={<Layout><MarketAnalysis /></Layout>} />
-          <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
-          <Route path="/seller-panel" element={<Layout><SellerPanel /></Layout>} />
+          <Route path="/user-profile" element={
+            <ProtectedRoute requiredRole="user">
+              <Layout><UserProfile /></Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/seller-panel" element={
+            <ProtectedRoute requiredRole="seller">
+              <Layout><SellerPanel /></Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/government-schemes" element={<Layout><GovernmentSchemes /></Layout>} />
           <Route path="/weather" element={<Layout><Weather /></Layout>} />
           <Route path="/blogs" element={<Layout><Blog /></Layout>} />
+          <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/role-login" element={<RoleLogin />} />
           
           {/* Placeholder routes for future pages */}
-          <Route path="/admin" element={<Layout><div className="p-8 text-center"><h1 className="text-2xl">Admin Dashboard - Coming Soon</h1></div></Layout>} />
+          <Route path="/admin" element={
+            <ProtectedRoute requiredRole="admin">
+              <Layout><div className="p-8 text-center"><h1 className="text-2xl">Admin Dashboard</h1><p className="text-muted-foreground mt-2">Welcome, Administrator!</p></div></Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/crops-hybrid" element={<Layout><div className="p-8 text-center"><h1 className="text-2xl">Crops & Hybrids - Coming Soon</h1></div></Layout>} />
           <Route path="/support" element={<Layout><div className="p-8 text-center"><h1 className="text-2xl">Support & Community - Coming Soon</h1></div></Layout>} />
           
@@ -49,7 +71,9 @@ const App = () => (
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<Layout><NotFound /></Layout>} />
-        </Routes>
+          </Routes>
+          <FloatingChatbot />
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
